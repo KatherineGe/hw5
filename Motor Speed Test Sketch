@@ -3,7 +3,7 @@ int AIN1 = 7;
 int AIN2 = 8;
 int BIN1 = 9;
 int BIN2 = 10;
-int motorPWMA = 3;
+int motorPWMA = 6;
 int motorPWMB = 5;
 
 void setup() {
