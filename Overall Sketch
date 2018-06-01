@@ -1,0 +1,191 @@
+
+int led = 13;
+int AIN1 = 7;
+int AIN2 = 8;
+int BIN1 = 9;
+int BIN2 = 10;
+int motorPWMA = 3;
+int motorPWMB = 5;
+
+#include <IRremote.h>
+int RECV_PIN = 4;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
+void setup() {
+  pinMode(led, OUTPUT);
+  pinMode(AIN1, OUTPUT);
+  pinMode(AIN2, OUTPUT);
+  pinMode(BIN1, OUTPUT);
+  pinMode(BIN2, OUTPUT);
+  pinMode(A0, INPUT);
+  Serial.begin(19200);
+  irrecv.enableIRIn();
+
+
+}
+
+void forward(int howfast) {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+
+  analogWrite(motorPWMA, howfast);
+  analogWrite(motorPWMB, howfast);
+
+
+}
+
+void backward(int howfast) {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+
+  analogWrite(motorPWMA, howfast);
+  analogWrite(motorPWMB, howfast);
+
+
+}
+
+void right() {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+
+  analogWrite(motorPWMA, 255);
+  analogWrite(motorPWMB, 128);
+
+
+}
+
+void left() {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+
+  analogWrite(motorPWMA, 128);
+  analogWrite(motorPWMB, 255);
+
+}
+
+void spinleft() {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, HIGH);
+  digitalWrite(BIN1, HIGH);
+  digitalWrite(BIN2, LOW);
+
+  analogWrite(motorPWMA, 255);
+  analogWrite(motorPWMB, 255);
+
+}
+
+void spinright() {
+  digitalWrite(led, HIGH);
+  digitalWrite(AIN1, HIGH);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, HIGH);
+
+  analogWrite(motorPWMA, 255);
+  analogWrite(motorPWMB, 255);
+
+}
+
+void stop() {
+  digitalWrite(led, LOW);
+  digitalWrite(AIN1, LOW);
+  digitalWrite(AIN2, LOW);
+  digitalWrite(BIN1, LOW);
+  digitalWrite(BIN2, LOW);
+
+}
+void loop() {
+  if (irrecv.decode(&results)) {
+    irrecv.resume();
+
+    if (results.value == 0xFF18E7) {
+      Serial.println("Button Up");
+      forward(255);
+      delay(1500);
+      stop();
+    }
+    else if (results.value == 0xFF4AB5) {
+      Serial.println("Button Down");
+      backward(255);
+      delay(1500);
+      stop();
+    }
+    else if (results.value == 0xFF10EF) {
+      Serial.println("Button Left");
+      left();
+      delay(1500);
+      stop();
+    }
+    else if (results.value == 0xFF5AA5) {
+      Serial.println("Button Right");
+      right();
+      delay(1500);
+      stop();
+    }
+    if (results.value == 0xFF38C7) {
+      Serial.println("Button OK");
+    }
+
+    else if (results.value == 0xFFB04F) {
+      Serial.println("Button #");
+      stop();
+    }
+
+    else if (results.value == 0xFFA25D) {
+      Serial.println("Button 1");
+      forward(128);
+    }
+    else if (results.value == 0xFF629D) {
+      Serial.println("Button 2");
+      backward(128);
+    }
+    else if (results.value == 0xFFE21D) {
+      Serial.println("Button 3");
+      spinleft();
+    }
+
+    else if (results.value == 0xFF22DD) {
+      Serial.println("Button 4");
+      spinright();
+    }
+
+    else if (results.value == 0xFF02FD) {
+      Serial.println("Button 5");
+    }
+
+    else if (results.value == 0xFFC23D) {
+      Serial.println("Button 6");
+    }
+
+    else if (results.value == 0xFFE01F) {
+      Serial.println("Button 7");
+    }
+
+    else {
+      Serial.print("Unrecognized: ");
+      Serial.print(results.value, HEX);
+      Serial.println();
+    }
+
+    int value;
+
+    value = analogRead(A0);
+    Serial.print(value);
+    Serial.println("   0  1000");
+
+  }
+}
