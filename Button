@@ -1,0 +1,31 @@
+int button = 2;
+int led = 13;
+
+void setup()
+{
+  Serial.begin(19200);
+  pinMode(button, INPUT_PULLUP);
+  pinMode(led, OUTPUT);
+}
+
+bool wasPressed = false;
+bool ledState = false;
+void loop()
+{
+  if (digitalRead(button) == LOW) {
+    if (! wasPressed) {
+      Serial.println("Button pressed");
+      wasPressed = true;
+      ledState = !ledState;
+      digitalWrite(led, ledState);
+    }
+  }
+  else {
+    if (wasPressed) {
+      Serial.println("Button released");
+      Serial.println();
+      wasPressed = false;;
+    }
+  }
+}
+
